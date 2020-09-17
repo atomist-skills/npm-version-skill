@@ -28,5 +28,9 @@ export const Skill = skill<{ repos: any }>({
 		repos: parameter.repoFilter(),
 	},
 
+	runtime: {
+		memory: 512,
+	},
+
 	subscriptions: ["@atomist/skill/github/onTag"],
 });
