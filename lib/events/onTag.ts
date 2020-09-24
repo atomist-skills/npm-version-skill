@@ -15,6 +15,7 @@
  */
 
 import { EventHandler, log, repository, secret, status } from "@atomist/skill";
+import * as fs from "fs-extra";
 import { OnTagSubscription } from "../typings/types";
 
 export const handler: EventHandler<OnTagSubscription> = async ctx => {
@@ -47,6 +48,17 @@ export const handler: EventHandler<OnTagSubscription> = async ctx => {
 		}),
 	);
 	await ctx.audit.log(`Cloned repository ${repoSlug}#${defaultBranch}`);
+
+	try {
+		const pjVersion = (await fs.readJson("package.json"))?.version;
+		if (pjVersion && pjVersion !== tagName) {
+			const reason = `Package version ${pjVersion} already changed from tag ${tagName}`;
+			await ctx.audit.log(reason);
+			return status.success(reason);
+		}
+	} catch (e) {
+		// ignore
+	}
 
 	try {
 		const result = await project.exec("npm", [
