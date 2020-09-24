@@ -22,11 +22,7 @@ export const handler: EventHandler<OnTagSubscription> = async ctx => {
 	const tagName = tag?.name;
 	const releaseSemVerRegExp = /^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
 	if (!releaseSemVerRegExp.test(tagName)) {
-		return {
-			code: 0,
-			reason: `Not a semantic version tag: ${tag}`,
-			visibility: "hidden",
-		};
+		return status.success(`Not a semantic version tag: ${tag}`).hidden();
 	}
 
 	const repo = tag.commit.repo;
@@ -50,10 +46,17 @@ export const handler: EventHandler<OnTagSubscription> = async ctx => {
 			branch: defaultBranch,
 		}),
 	);
-	await ctx.audit.log(`Cloned repository ${repoSlug}#${tagName}`);
+	await ctx.audit.log(`Cloned repository ${repoSlug}#${defaultBranch}`);
 
 	try {
-		await project.exec("npm", ["version", "--no-git-tag-version", "patch"]);
+		const result = await project.exec("npm", [
+			"version",
+			"--no-git-tag-version",
+			"patch",
+		]);
+		await ctx.audit.log(
+			`Incremented patch level of ${repoSlug}: ${result.stdout.trim()}`,
+		);
 	} catch (e) {
 		const reason = `Failed to increment version patch level of ${repoSlug}: ${e.message}`;
 		await ctx.audit.log(reason);
@@ -63,9 +66,13 @@ export const handler: EventHandler<OnTagSubscription> = async ctx => {
 	try {
 		await project.exec("git", [
 			"commit",
+			"--all",
+			"--no-verify",
+			"--no-post-rewrite",
 			"-m",
-			"Incrementing version patch level after release\n\n[atomist:generated]\n" +
-				"[atomist-skill:atomist/npm-version-skill]",
+			"Incrementing version patch level after release",
+			"-m",
+			"[atomist:generated] [atomist-skill:atomist/npm-version-skill]",
 		]);
 	} catch (e) {
 		const reason = `Failed to commit version change for ${repoSlug}: ${e.message}`;
