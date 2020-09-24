@@ -50,14 +50,17 @@ export const handler: EventHandler<OnTagSubscription> = async ctx => {
 	await ctx.audit.log(`Cloned repository ${repoSlug}#${defaultBranch}`);
 
 	try {
-		const pjVersion = (await fs.readJson("package.json"))?.version;
+		const pjVersion = (await fs.readJson(project.path("package.json")))
+			?.version;
 		if (pjVersion && pjVersion !== tagName) {
 			const reason = `Package version ${pjVersion} already changed from tag ${tagName}`;
 			await ctx.audit.log(reason);
 			return status.success(reason);
+		} else {
+			log.debug(`Package version ${pjVersion} equals tag ${tagName}`);
 		}
 	} catch (e) {
-		// ignore
+		log.warn(`Failed to read package.json: ${e.message}`);
 	}
 
 	try {
