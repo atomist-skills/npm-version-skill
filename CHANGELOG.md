@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/npm-version-skill/compare/0.1.0...HEAD)
 
+### Changed
+
+-   Get skill name from context. [ee4e002](https://github.com/atomist-skills/npm-version-skill/commit/ee4e00237e7506eacf7efd5f2a079f613f2bdd4b)
+
 ## [0.1.0](https://github.com/atomist-skills/npm-version-skill/tree/0.1.0)
 
 ### Added
