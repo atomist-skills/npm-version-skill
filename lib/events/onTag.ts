@@ -85,7 +85,7 @@ export const handler: EventHandler<OnTagSubscription> = async ctx => {
 			"--no-verify",
 			"--no-post-rewrite",
 			"--message=Incrementing version patch level after release",
-			"--message=[atomist:generated] [atomist-skill:atomist/npm-version-skill]",
+			`--message=[atomist:generated] [atomist-skill:${ctx.skill.namespace}/${ctx.skill.name}]`,
 		]);
 	} catch (e) {
 		const reason = `Failed to commit version change for ${repoSlug}: ${e.message}`;
