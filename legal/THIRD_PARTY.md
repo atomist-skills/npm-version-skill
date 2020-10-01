@@ -21,7 +21,7 @@ This page details all runtime dependencies of `@atomist/npm-version-skill`.
 | [GPL-3.0](#gpl-30)              | 1     |
 | [ISC](#isc)                     | 49    |
 | [MIT AND Zlib](#mit-and-zlib)   | 1     |
-| [MIT](#mit)                     | 550   |
+| [MIT](#mit)                     | 551   |
 | [Public Domain](#public-domain) | 1     |
 | [Unlicense](#unlicense)         | 1     |
 
@@ -301,8 +301,9 @@ MIT License - [https://opensource.org/licenses/MIT](https://opensource.org/licen
 | `@graphql-codegen/plugin-helpers`                    | `1.17.8`       |                      | [https://github.com/dotansimha/graphql-code-generator](https://github.com/dotansimha/graphql-code-generator)                                                                                         |
 | `@graphql-codegen/plugin-helpers`                    | `1.17.9`       |                      | [https://github.com/dotansimha/graphql-code-generator](https://github.com/dotansimha/graphql-code-generator)                                                                                         |
 | `@graphql-codegen/typescript-operations`             | `1.17.8`       |                      | [https://github.com/dotansimha/graphql-code-generator](https://github.com/dotansimha/graphql-code-generator)                                                                                         |
-| `@graphql-codegen/typescript`                        | `1.17.9`       |                      | [https://github.com/dotansimha/graphql-code-generator](https://github.com/dotansimha/graphql-code-generator)                                                                                         |
+| `@graphql-codegen/typescript`                        | `1.17.10`      |                      | [https://github.com/dotansimha/graphql-code-generator](https://github.com/dotansimha/graphql-code-generator)                                                                                         |
 | `@graphql-codegen/visitor-plugin-common`             | `1.17.14`      |                      | [https://github.com/dotansimha/graphql-code-generator](https://github.com/dotansimha/graphql-code-generator)                                                                                         |
+| `@graphql-codegen/visitor-plugin-common`             | `1.17.15`      |                      | [https://github.com/dotansimha/graphql-code-generator](https://github.com/dotansimha/graphql-code-generator)                                                                                         |
 | `@graphql-tools/apollo-engine-loader`                | `6.2.4`        | Dotan Simha          | [https://github.com/ardatan/graphql-tools](https://github.com/ardatan/graphql-tools)                                                                                                                 |
 | `@graphql-tools/code-file-loader`                    | `6.2.4`        | Dotan Simha          | [https://github.com/ardatan/graphql-tools](https://github.com/ardatan/graphql-tools)                                                                                                                 |
 | `@graphql-tools/delegate`                            | `6.2.4`        |                      | [https://github.com/ardatan/graphql-tools](https://github.com/ardatan/graphql-tools)                                                                                                                 |
