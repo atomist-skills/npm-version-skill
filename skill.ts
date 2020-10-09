@@ -18,7 +18,7 @@ import { Category, parameter, resourceProvider, skill } from "@atomist/skill";
 
 export const Skill = skill<{ repos: any }>({
 	displayName: "npm Version",
-	categories: [Category.DevEx, Category.DevOps],
+	categories: [Category.DevOps],
 
 	resourceProviders: {
 		github: resourceProvider.gitHub({ minRequired: 1 }),
