@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/npm-version-skill/compare/0.2.0...HEAD)
 
+### Changed
+
+-   Remove single dispatch. [ce0b12f](https://github.com/atomist-skills/npm-version-skill/commit/ce0b12f2056dfe864f4e76b71ee54b02d058b80f)
+
 ## [0.2.0](https://github.com/atomist-skills/npm-version-skill/compare/0.1.0...0.2.0) - 2020-10-09
 
 ### Changed
