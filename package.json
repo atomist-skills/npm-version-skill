@@ -11,14 +11,11 @@
   "homepage": "https://github.com/atomist-skills/npm-version-skill#readme",
   "license": "Apache-2.0",
   "dependencies": {
-    "@atomist/skill": "0.1.1-139",
+    "@atomist/skill": "^0.3.0-main.21",
     "fs-extra": "^9.0.1"
   },
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.7.1",
-    "@graphql-codegen/cli": "^1.17.10",
-    "@graphql-codegen/typescript": "^1.17.10",
-    "@graphql-codegen/typescript-operations": "^1.17.8",
     "@types/fs-extra": "^9.0.2",
     "@types/mocha": "^8.0.3",
     "@types/power-assert": "^1.5.3",
@@ -55,11 +52,10 @@
     "clean:npm": "rimraf node_modules",
     "clean:run": "rimraf *-v8.log profile.txt log",
     "clean:test": "rimraf .nyc_output coverage",
-    "compile": "run-s gql:gen compile:ts",
+    "compile": "run-s compile:ts",
     "compile:ts": "tsc --project .",
     "doc": "typedoc --mode modules --excludeExternals --ignoreCompilerErrors --exclude \"**/*.d.ts\" --out doc index.ts lib",
     "git:info": "atm-git-info",
-    "gql:gen": "graphql-codegen",
     "lint": "run-p lint:eslint lint:prettier",
     "lint:eslint": "eslint --ext .ts .",
     "lint:prettier": "prettier --list-different \"**/*.{graphql,json,markdown,md,yaml,yml}\"",

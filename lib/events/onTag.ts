@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-import { EventHandler, log, repository, secret, status } from "@atomist/skill";
+import {
+	EventHandler,
+	log,
+	repository,
+	secret,
+	status,
+	subscription,
+} from "@atomist/skill";
 import * as fs from "fs-extra";
-import { OnTagSubscription } from "../typings/types";
 
-export const handler: EventHandler<OnTagSubscription> = async ctx => {
+export const handler: EventHandler<subscription.types.OnTagSubscription> = async ctx => {
 	const tag = ctx.data.Tag[0];
 	const tagName = tag?.name;
 	const releaseSemVerRegExp = /^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
