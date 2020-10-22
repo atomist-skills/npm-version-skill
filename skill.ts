@@ -17,6 +17,8 @@
 import { Category, parameter, resourceProvider, skill } from "@atomist/skill";
 
 export const Skill = skill<{ repos: any }>({
+	description:
+		"Increment the version patch level of an npm package after its release",
 	displayName: "npm Version",
 	categories: [Category.DevOps],
 
