@@ -31,6 +31,7 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 	if (!releaseSemVerRegExp.test(tagName)) {
 		return status.success(`Not a semantic version tag: ${tag}`).hidden();
 	}
+	const tagVersion = tagName.replace(/^v/, "");
 
 	const repo = tag.commit.repo;
 	await ctx.audit.log(`Starting npm Version on ${repo.owner}/${repo.name}`);
@@ -58,12 +59,12 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 	try {
 		const pjVersion = (await fs.readJson(project.path("package.json")))
 			?.version;
-		if (pjVersion && pjVersion !== tagName) {
-			const reason = `Package version ${pjVersion} already changed from tag ${tagName}`;
+		if (pjVersion && pjVersion !== tagVersion) {
+			const reason = `Package version ${pjVersion} already changed from tag ${tagVersion}`;
 			await ctx.audit.log(reason);
 			return status.success(reason);
 		} else {
-			log.debug(`Package version ${pjVersion} equals tag ${tagName}`);
+			log.debug(`Package version ${pjVersion} equals tag ${tagVersion}`);
 		}
 	} catch (e) {
 		log.warn(`Failed to read package.json: ${e.message}`);
