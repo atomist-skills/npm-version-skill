@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/npm-version-skill/compare/0.2.1...HEAD)
 
+### Fixed
+
+-   Extract version from tag. [55cb1e9](https://github.com/atomist-skills/npm-version-skill/commit/55cb1e95c845ad9a6284eff6a718ccc02b1741d4)
+
 ## [0.2.1](https://github.com/atomist-skills/npm-version-skill/compare/0.2.0...0.2.1) - 2020-10-14
 
 ### Changed
