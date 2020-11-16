@@ -21,6 +21,8 @@ export const Skill = skill<{ repos: any }>({
 		"Increment the version patch level of an npm package after its release",
 	displayName: "npm Version",
 	categories: [Category.DevOps],
+	iconUrl:
+		"https://raw.githubusercontent.com/atomist-skills/npm-version-skill/main/docs/images/icon.svg",
 
 	resourceProviders: {
 		github: resourceProvider.gitHub({ minRequired: 1 }),
