@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased](https://github.com/atomist-skills/npm-version-skill/compare/1.0.0...HEAD)
 
+### Changed
+
+-   Improve version increment logic. [#72](https://github.com/atomist-skills/npm-version-skill/issues/72)
+
 ## [1.0.0](https://github.com/atomist-skills/npm-version-skill/compare/0.2.1...1.0.0) - 2020-11-18
 
 ### Changed
