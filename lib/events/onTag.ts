@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Atomist, Inc.
+ * Copyright © 2021 Atomist, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 import {
 	EventHandler,
+	git,
 	log,
 	repository,
 	secret,
@@ -24,17 +25,21 @@ import {
 } from "@atomist/skill";
 import * as fs from "fs-extra";
 
+import { compareVersions, releaseSemanticVersion } from "../semver";
+
 export const handler: EventHandler<subscription.types.OnTagSubscription> = async ctx => {
 	const tag = ctx.data.Tag[0];
 	const tagName = tag?.name;
-	const releaseSemVerRegExp = /^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)$/;
-	if (!releaseSemVerRegExp.test(tagName)) {
-		return status.success(`Not a semantic version tag: ${tag}`).hidden();
+	const tagVersion = releaseSemanticVersion(tagName);
+	if (!tagVersion) {
+		return status
+			.success(`Not a release semantic version tag: ${tagName}`)
+			.hidden();
 	}
-	const tagVersion = tagName.replace(/^v/, "");
 
 	const repo = tag.commit.repo;
-	await ctx.audit.log(`Starting npm Version on ${repo.owner}/${repo.name}`);
+	const repoSlug = `${repo.owner}/${repo.name}`;
+	await ctx.audit.log(`Starting npm Version on ${repoSlug}`);
 
 	const credential = await ctx.credential.resolve(
 		secret.gitHubAppToken({
@@ -44,7 +49,6 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 		}),
 	);
 
-	const repoSlug = `${repo.owner}/${repo.name}`;
 	const defaultBranch = repo.defaultBranch || "master";
 	const project = await ctx.project.clone(
 		repository.gitHub({
@@ -57,65 +61,58 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 	await ctx.audit.log(`Cloned repository ${repoSlug}#${defaultBranch}`);
 
 	try {
-		const pjVersion = (await fs.readJson(project.path("package.json")))
-			?.version;
-		if (pjVersion && pjVersion !== tagVersion) {
-			const reason = `Package version ${pjVersion} already changed from tag ${tagVersion}`;
-			await ctx.audit.log(reason);
-			return status.success(reason);
-		} else {
-			log.debug(`Package version ${pjVersion} equals tag ${tagVersion}`);
-		}
-	} catch (e) {
-		log.warn(`Failed to read package.json: ${e.message}`);
-	}
+		await git.persistChanges({
+			branch: defaultBranch,
+			editors: [
+				async () => {
+					try {
+						const pjPath = project.path("package.json");
+						const pjContents = await fs.readJson(pjPath);
+						const pjVersion = pjContents?.version;
+						if (compareVersions(pjVersion, tagVersion) === 1) {
+							await ctx.audit.log(
+								`Package version ${pjVersion} is greater than tag ${tagVersion}`,
+							);
+							return undefined;
+						}
+					} catch (e) {
+						log.warn(`Failed to read package.json: ${e.message}`);
+					}
 
-	try {
-		const result = await project.exec("npm", [
-			"version",
-			"--no-git-tag-version",
-			"patch",
-		]);
-		await ctx.audit.log(
-			`Incremented patch level of ${repoSlug}: ${result.stdout.trim()}`,
-		);
+					await project.exec("npm", [
+						"version",
+						"--allow-same-version",
+						"--no-git-tag-version",
+						tagVersion,
+					]);
+					await ctx.audit.log(
+						`Set package version of ${repoSlug} to tag version ${tagVersion}`,
+					);
+
+					const result = await project.exec("npm", [
+						"version",
+						"--no-git-tag-version",
+						"patch",
+					]);
+					await ctx.audit.log(
+						`Incremented patch level of ${repoSlug}: ${result.stdout.trim()}`,
+					);
+
+					return (
+						`Incrementing version patch level after release\n\n` +
+						`[atomist:generated] [atomist-skill:${ctx.skill.namespace}/${ctx.skill.name}]`
+					);
+				},
+			],
+			project,
+		});
 	} catch (e) {
-		const reason = `Failed to increment version patch level of ${repoSlug}: ${e.message}`;
+		const reason = `Failed to increment version: ${e.message}`;
 		await ctx.audit.log(reason);
 		return status.failure(reason);
-	}
-
-	try {
-		await project.exec("git", [
-			"commit",
-			"--all",
-			"--no-verify",
-			"--no-post-rewrite",
-			"--message=Incrementing version patch level after release",
-			`--message=[atomist:generated] [atomist-skill:${ctx.skill.namespace}/${ctx.skill.name}]`,
-		]);
-	} catch (e) {
-		const reason = `Failed to commit version change for ${repoSlug}: ${e.message}`;
-		await ctx.audit.log(reason);
-		return status.failure(reason);
-	}
-
-	const remote = "origin";
-	try {
-		await project.exec("git", ["push", remote, defaultBranch]);
-	} catch (e) {
-		const reason = `Failed push version change for ${repoSlug}: ${e.message}`;
-		await ctx.audit.log(reason);
-		try {
-			await ctx.audit.log("Trying again after fetch and rebase");
-			await project.exec("git", ["pull", "--rebase", remote]);
-			await project.exec("git", ["push", remote, defaultBranch]);
-		} catch (e) {
-			return status.failure(`${reason}, ${e.message}`);
-		}
 	}
 
 	const msg = `Incremented version patch level for ${repoSlug}`;
-	log.info(msg);
+	await ctx.audit.log(msg);
 	return status.success(msg);
 };
