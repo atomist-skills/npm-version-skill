@@ -19,7 +19,7 @@ This page details all runtime dependencies of `@atomist/npm-version-skill`.
 | [CC0-1.0](#cc0-10)              | 3     |
 | [GPL-2.0](#gpl-20)              | 1     |
 | [GPL-3.0](#gpl-30)              | 1     |
-| [ISC](#isc)                     | 52    |
+| [ISC](#isc)                     | 51    |
 | [MIT AND Zlib](#mit-and-zlib)   | 1     |
 | [MIT](#mit)                     | 604   |
 | [Public Domain](#public-domain) | 1     |
@@ -217,7 +217,6 @@ ISC License - [https://www.isc.org/downloads/software-support-policy/isc-license
 | `require-main-filename`           | `2.0.0`  | Ben Coe            | [https://github.com/yargs/require-main-filename](https://github.com/yargs/require-main-filename)                                 |
 | `semver`                          | `5.7.1`  |                    | [https://github.com/npm/node-semver](https://github.com/npm/node-semver)                                                         |
 | `semver`                          | `6.3.0`  |                    | [https://github.com/npm/node-semver](https://github.com/npm/node-semver)                                                         |
-| `semver`                          | `7.3.2`  |                    | [https://github.com/npm/node-semver](https://github.com/npm/node-semver)                                                         |
 | `semver`                          | `7.3.4`  |                    | [https://github.com/npm/node-semver](https://github.com/npm/node-semver)                                                         |
 | `set-blocking`                    | `2.0.0`  | Ben Coe            | [https://github.com/yargs/set-blocking](https://github.com/yargs/set-blocking)                                                   |
 | `setprototypeof`                  | `1.2.0`  | Wes Todd           | [https://github.com/wesleytodd/setprototypeof](https://github.com/wesleytodd/setprototypeof)                                     |
