@@ -39,7 +39,7 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 
 	const repo = tag.commit.repo;
 	const repoSlug = `${repo.owner}/${repo.name}`;
-	await ctx.audit.log(`Starting npm Version on ${repoSlug}`);
+	log.info(`Starting npm Version on ${repoSlug}`);
 
 	const credential = await ctx.credential.resolve(
 		secret.gitHubAppToken({
@@ -58,7 +58,7 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 			branch: defaultBranch,
 		}),
 	);
-	await ctx.audit.log(`Cloned repository ${repoSlug}#${defaultBranch}`);
+	log.info(`Cloned repository ${repoSlug}#${defaultBranch}`);
 
 	try {
 		await git.persistChanges({
@@ -70,7 +70,7 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 						const pjContents = await fs.readJson(pjPath);
 						const pjVersion = pjContents?.version;
 						if (compareVersions(pjVersion, tagVersion) === 1) {
-							await ctx.audit.log(
+							log.info(
 								`Package version ${pjVersion} is greater than tag ${tagVersion}`,
 							);
 							return undefined;
@@ -85,7 +85,7 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 						"--no-git-tag-version",
 						tagVersion,
 					]);
-					await ctx.audit.log(
+					log.info(
 						`Set package version of ${repoSlug} to tag version ${tagVersion}`,
 					);
 
@@ -94,7 +94,7 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 						"--no-git-tag-version",
 						"patch",
 					]);
-					await ctx.audit.log(
+					log.info(
 						`Incremented patch level of ${repoSlug}: ${result.stdout.trim()}`,
 					);
 
@@ -108,11 +108,11 @@ export const handler: EventHandler<subscription.types.OnTagSubscription> = async
 		});
 	} catch (e) {
 		const reason = `Failed to increment version: ${e.message}`;
-		await ctx.audit.log(reason);
+		log.error(reason);
 		return status.failure(reason);
 	}
 
 	const msg = `Incremented version patch level for ${repoSlug}`;
-	await ctx.audit.log(msg);
+	log.info(msg);
 	return status.success(msg);
 };
